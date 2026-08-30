@@ -1,0 +1,20 @@
+{
+  "tests/test_tidy_downloads.py": {
+    "mtime": 1787447153.1369147,
+    "seen": 1788126741.303384,
+    "ast_hash": "2f143f903ac2d88279dd5f078f9e0fa8",
+    "semantic_hash": "2f143f903ac2d88279dd5f078f9e0fa8"
+  },
+  "tidy_downloads.py": {
+    "mtime": 1787447135.5620549,
+    "seen": 1788126741.3033862,
+    "ast_hash": "b30bede020ec71fa32b287136f894280",
+    "semantic_hash": "b30bede020ec71fa32b287136f894280"
+  },
+  "README.md": {
+    "mtime": 1787447153.2948735,
+    "seen": 1788126741.303387,
+    "ast_hash": "51111e9cadbc30d523b1942725f32d21",
+    "semantic_hash": "51111e9cadbc30d523b1942725f32d21"
+  }
+}
