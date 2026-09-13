@@ -2,3 +2,7 @@ __pycache__/
 *.py[cod]
 .demo*
 .DS_Store
+.venv/
+video-demos/.venv/
+.env
+video-demos/.env
