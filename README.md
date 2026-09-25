@@ -53,3 +53,19 @@ Each applied run appends `timestamp  old-path  ->  new-path` to `~/Downloads/tid
 ```bash
 mv ~/Downloads/PDFs/2026-08/invoice.pdf ~/Downloads/
 ```
+
+## Mac maintenance (`maintain.py`)
+
+One-button cleanup. Preview by default; `--apply` makes changes. Never hard-deletes.
+
+```bash
+python3 /Users/davidpalmeri/Developer/tidy-downloads/maintain.py --apply
+```
+
+Tidies Downloads and loose photos, trashes Desktop screenshots older than 30 days,
+runs Homebrew update/upgrade/cleanup, and reports (only) unused brew packages, stale
+dev folders, disk space, and dirty git repos. Each run overwrites
+`Obsidian Vault/output/Mac Maintenance Report.md`. Toggle tasks in `TASKS` at the top
+of the script, or run a subset with `--only homebrew disk`.
+
+Wired to the **Mac maintenance** task (Manual) in the Claude desktop app: press **Run now**.
