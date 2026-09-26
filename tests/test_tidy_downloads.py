@@ -42,12 +42,13 @@ class PlanMovesTest(unittest.TestCase):
         self.assertEqual(dests["shot.png"], self.root / "Images" / "2026-08" / "shot.png")
         self.assertEqual(dests["bundle.zip"], self.root / "Archives" / "2026-08" / "bundle.zip")
 
-    def test_skips_incomplete_hidden_and_directories(self) -> None:
+    def test_skips_incomplete_hidden_log_and_directories(self) -> None:
         touch(self.root / "done.pdf", self.when)
         touch(self.root / "chrome.crdownload", self.when)
         touch(self.root / "safari.download", self.when)
         touch(self.root / "file.part", self.when)
         touch(self.root / ".secret.pdf", self.when)
+        touch(self.root / td.LOG_NAME, self.when)
         (self.root / "keep-folder").mkdir()
         (self.root / "PDFs").mkdir()
         names = {src.name for src, _ in td.plan_moves(self.root)}

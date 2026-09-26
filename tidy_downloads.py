@@ -91,8 +91,11 @@ def month_folder(path: Path) -> str:
     return datetime.fromtimestamp(path.stat().st_mtime).strftime("%Y-%m")
 
 
+LOG_NAME = "tidy-downloads.log"
+
+
 def is_skippable(path: Path) -> bool:
-    if path.name.startswith("."):
+    if path.name.startswith(".") or path.name == LOG_NAME:
         return True
     if path.is_dir():
         return True
@@ -206,7 +209,7 @@ def main(argv: list[str] | None = None) -> int:
 
     log_path = args.log
     if args.apply and log_path is None:
-        log_path = root / "tidy-downloads.log"
+        log_path = root / LOG_NAME
 
     result = apply_moves(plan, apply=args.apply, log_path=log_path)
     if args.apply:
