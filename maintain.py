@@ -31,6 +31,9 @@ SCREENSHOT_DIR = HOME / "Desktop"
 SCREENSHOT_PREFIXES = ("Screenshot ", "Screen Shot ", "Screen Recording ")
 OLD_DAYS = 30
 
+# Repos kept off GitHub on purpose; still flagged for uncommitted work.
+LOCAL_ONLY_REPOS = {"finance-dashboard", "finance-kit"}
+
 # Flip any to False to skip that task.
 TASKS = {
     "old_screenshots": True,
@@ -226,7 +229,8 @@ def task_git(apply: bool) -> list[str]:
         if dirty:
             notes.append(f"{len(dirty.splitlines())} uncommitted")
         if code != 0:
-            notes.append("no upstream")
+            if repo.name not in LOCAL_ONLY_REPOS:
+                notes.append("no upstream")
         elif ahead.strip() not in ("", "0"):
             notes.append(f"{ahead.strip()} unpushed")
         if notes:
