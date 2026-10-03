@@ -1,8 +1,10 @@
+import io
 import os
 import sys
 import tempfile
 import time
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
@@ -64,6 +66,42 @@ class MaintainTest(unittest.TestCase):
         self.assertNotIn("old stuff", report.read_text())
         self.assertIn("## A", report.read_text())
 
+    def test_models_flag_partial_and_stale_but_never_delete(self) -> None:
+        models = self.root / "models"
+        big = models / "mlx-community--Big-4bit" / "weights.safetensors"
+        big.parent.mkdir(parents=True)
+        with open(big, "wb") as f:
+            f.truncate(m.PARTIAL_MODEL_BYTES + 1)  # sparse, no real disk use
+        old = time.time() - 60 * 86400
+        os.utime(big, (old, old))
+        os.utime(big.parent, (old, old))
+        touch(models / "mlx-community--Half-8bit/part.safetensors")
+        (models / "caches").mkdir()
+
+        rows = {r["name"]: r for r in m.scan_models(models, 30)}
+        self.assertEqual(set(rows), {"mlx-community/Big-4bit", "mlx-community/Half-8bit"})
+        self.assertTrue(rows["mlx-community/Big-4bit"]["stale"])
+        self.assertFalse(rows["mlx-community/Big-4bit"]["partial"])
+        self.assertTrue(rows["mlx-community/Half-8bit"]["partial"])
+
+        text = "\n".join(m.task_node_models(True, root=models))
+        self.assertIn("removal candidate", text)
+        self.assertTrue(big.exists())
+
+    def test_node_mode_prints_sections_and_writes_no_report(self) -> None:
+        report = self.root / "r.md"
+        saved = m.NODE_TASKS
+        m.TASK_FUNCS["fake"] = ("Fake", lambda a: ["hello"])
+        m.NODE_TASKS = ["fake"]
+        try:
+            buf = io.StringIO()
+            with redirect_stdout(buf):
+                m.main(["--node", "--report", str(report)])
+        finally:
+            m.NODE_TASKS = saved
+            m.TASK_FUNCS.pop("fake")
+        self.assertEqual(buf.getvalue().strip(), "## Fake\n\nhello")
+        self.assertFalse(report.exists())
 
 if __name__ == "__main__":
     unittest.main()
